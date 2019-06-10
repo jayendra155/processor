@@ -46,6 +46,10 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 }
 
+release {
+    failOnUpdateNeeded = false
+}
+
 afterEvaluate {
     task sourceJar(type: Jar, dependsOn: classes) {
         classifier 'sources'
