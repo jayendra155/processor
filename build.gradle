@@ -1,0 +1,92 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'java'
+    id 'net.researchgate.release' version '2.6.0'
+    id 'maven-publish'
+    id "com.jfrog.artifactory" version "4.9.6"
+
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'net.samurai.katana'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+def varintName = "processor"
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+}
+
+afterEvaluate {
+    task sourceJar(type: Jar, dependsOn: classes) {
+        classifier 'sources'
+        from sourceSets.main.java
+        duplicatesStrategy = "exclude"
+        def platformSrc = sourceSets.main.java
+        from (platformSrc)
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+}
+
+tasks.withType(Jar) {
+    archivesBaseName = varintName
+}
+
+publishing {
+    publications {
+        mavenProject(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId varintName
+            version project.version
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', "processor $version - Processor for java")
+                root.children().last() + pomConfig
+            }
+
+
+//            artifact sourceJar {
+//                classifier "sources"
+//            }
+//            artifact javadocJar {
+//                classifier "javadoc"
+//            }
+        }
+    }
+}
+
