@@ -1,0 +1,45 @@
+spring:
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  data:
+    jpa:
+      repositories:
+        enabled: true
+    rest:
+      base-path: /api
+      default-page-size: 25
+      return-body-on-create: true
+      detection-strategy: default
+  datasource:
+    username: user
+    password: password
+    url: jdbc:mysql://localhost:3306/processor
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  application:
+    name: processor
+
+management:
+  info:
+    git:
+      enabled: true
+      mode: full
+    build:
+      enabled: true
+    defaults:
+      enabled: true
+
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  server:
+    port: 8081

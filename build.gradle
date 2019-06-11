@@ -10,7 +10,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'net.samurai.katana'
-version = '1.0.0-SNAPSHOT'
+version = project.property("version")
 sourceCompatibility = '1.8'
 def varintName = "processor"
 
@@ -26,6 +26,10 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://repo.maven.apache.org/maven2/"
+    }
+    jcenter()
 }
 
 dependencies {
@@ -44,6 +48,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+
 }
 
 release {
